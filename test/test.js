@@ -81,7 +81,8 @@ test('error: job not found', function (t, db) {
   Schedule(db)
     .on('error', function (err) {
       t.ok(err);
-      t.end();
+      // because of issue in levelUp
+      setTimeout(t.end.bind(t), 100);
     })
     .run('')
 });
@@ -110,7 +111,14 @@ function test (name, fn) {
   tap.test(name, function (t) {
     rimraf.sync(__dirname + '/db');
     var db = levelup(__dirname + '/db');
-    t.end = db.close.bind(db, t.end.bind(t));
+
+    var oldEnd = t.end;
+    t.end = function () {
+      db.close(function (err) {
+        if (err) t.notOk(err);
+        oldEnd.call(t);
+      });
+    };
     fn(t, db);
   });
 }

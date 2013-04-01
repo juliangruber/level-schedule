@@ -26,6 +26,8 @@ function schedule (db, prefix) {
 
   this.jobs = {};
   this.timeout = null;
+
+  this._start();
 }
 
 inherits(schedule, EventEmitter);
