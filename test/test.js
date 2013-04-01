@@ -29,6 +29,18 @@ test('simple 2', function (t, db) {
     .run('simple', 1, Date.now() + 20);
 });
 
+test('simple 2 reversed', function (t, db) {
+  t.plan(2);
+  var i = 0;
+
+  Schedule(db)
+    .job('simple', function (payload) {
+      t.equal(payload, 1 - i++);
+    })
+    .run('simple', 0, Date.now() + 20)
+    .run('simple', 1, Date.now() + 10);
+});
+
 test('repeat', function (t, db) {
   t.plan(2);
 
