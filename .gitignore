@@ -1,0 +1,4 @@
+example/db
+test/db
+*.sw*
+node_modules

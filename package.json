@@ -1,0 +1,41 @@
+{
+  "name": "level-schedule",
+  "description": "Durable job scheduler based on LevelDB",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/juliangruber/level-schedule.git"
+  },
+  "homepage": "https://github.com/juliangruber/level-schedule",
+  "main": "index.js",
+  "scripts": {
+    "test": "tap test/*.js"
+  },
+  "dependencies": {
+    "level-sublevel": "~4.0.3",
+    "level-peek": "~1.0.5",
+    "json-stringify-safe": "~4.0.0"
+  },
+  "devDependencies": {
+    "tap": "*",
+    "levelup": "~0.6.2",
+    "rimraf": "~2.1.4"
+  },
+  "peerDependencies": {
+    "levelup": "*"
+  },
+  "keywords": [
+    "schedule",
+    "scheduler",
+    "leveldb",
+    "levelup",
+    "cron",
+    "settimeout"
+  ],
+  "author": {
+    "name": "Julian Gruber",
+    "email": "mail@juliangruber.com",
+    "url": "http://juliangruber.com"
+  },
+  "license": "MIT"
+}
