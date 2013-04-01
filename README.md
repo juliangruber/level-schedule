@@ -1,7 +1,7 @@
-
 # level-schedule
 
 Durable job scheduler based on [LevelDB](https://github.com/rvagg/node-levelup).
+If the process is restarted it will transparently resume where it stopped.
 
 [![Build Status](https://travis-ci.org/juliangruber/level-schedule.png?branch=master)](https://travis-ci.org/juliangruber/level-schedule)
 
