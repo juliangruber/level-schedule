@@ -72,6 +72,49 @@ schedule.prototype.run = function (job, payload, ts) {
 }
 
 /**
+ * Repeated task sugar.
+ *
+ * @param {String} job
+ * @param {Object=} payload
+ * @param {Number} interval
+ * @return {Number} id
+ */
+
+schedule.prototype.repeat = function (job, payload, interval) {
+  var self = this;
+  
+  if (!interval) {
+    interval = payload;
+    payload = null;
+  }
+
+  var error = self._error(job, payload);
+
+  if (!self.jobs[job]) return error('job not found', job);
+
+  var ts = Date.now() + interval;
+
+  var task = stringify({
+    job      : job,
+    ts       : ts,
+    payload  : payload,
+    interval : interval
+  });
+
+  var id = Math.random().toString(16).slice(2);
+  var key = ts + '!' + id;
+
+  self.db.put(key, task, function (err) {
+    if (err) return error('saving job', err);
+    if (!self.timeout || self.timeout.ts > ts) {
+      self._start();
+    }
+  });
+
+  return id;
+}
+
+/**
  * Register a job with `name` and `fn`.
  *
  * @param {String} name
@@ -103,6 +146,7 @@ schedule.prototype._start = function () {
     var ts = key.split('!')[0];
     var job = self.jobs[task.job];
     var payload = task.payload;
+    var interval = task.interval;
 
     if (!job) {
       var err = new Error('job not found');
@@ -133,6 +177,10 @@ schedule.prototype._start = function () {
         }
 
         self.db.del(key, function (err) {
+          if (interval) {
+            self.repeat(task.job, payload, interval);
+          }
+
           self._start();
         });
       }

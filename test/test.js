@@ -57,6 +57,25 @@ test('repeat', function (t, db) {
     .run('repeat', Date.now());
 });
 
+test('repeat sugar', function (t, db) {
+  t.plan(2);
+
+  var i = 0;
+  var id;
+  var queue = Schedule(db);
+
+  queue.job('log', function () {
+    if (i++ == 0) {
+      t.ok(true, 'job executed');
+    } else {
+      t.ok(true, 'job repeated');
+      queue.stop(id);
+    }
+  });
+
+  id = queue.repeat('log', {}, 100);
+});
+
 test('payload', function (t, db) {
   Schedule(db)
     .job('payload', function (payload) {
@@ -110,15 +129,17 @@ test('error: async err', function (t, db) {
 function test (name, fn) {
   tap.test(name, function (t) {
     rimraf.sync(__dirname + '/db');
-    var db = levelup(__dirname + '/db');
+    levelup(__dirname + '/db', function (err, db) {
+      if (err) throw err;
 
-    var oldEnd = t.end;
-    t.end = function () {
-      db.close(function (err) {
-        if (err) t.notOk(err);
-        oldEnd.call(t);
-      });
-    };
-    fn(t, db);
+      var oldEnd = t.end;
+      t.end = function () {
+        db.close(function (err) {
+          if (err) t.notOk(err);
+          oldEnd.call(t);
+        });
+      };
+      fn(t, db);
+    });
   });
 }
