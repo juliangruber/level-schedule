@@ -3,6 +3,7 @@ var peek         = require('level-peek');
 var stringify    = require('json-stringify-safe');
 var EventEmitter = require('events').EventEmitter;
 var inherits     = require('util').inherits;
+var TIMEOUT_MAX  = 2147483647; // 2^31-1
 
 module.exports = schedule;
 
@@ -113,31 +114,40 @@ schedule.prototype._start = function () {
     if (self.timeout) clearTimeout(self.timeout.id);
 
     self.timeout = { ts : ts };
-    self.timeout.id = setTimeout(function () {
-
-      // sync job
-      if (job.length < 2) {
-        try { job.call(self, payload); }
-        catch (err) { onDone(err); }
-        finally { onDone(); }
-      // async job
-      } else {
-        job.call(self, payload, onDone);
-      }
-
-      function onDone (err) {
-        if (err) {
-          err._type = 'executing job';
-          err._task = task;
-          self.emit('error', err);
+    
+    var delta = ts - Date.now();
+    
+    if (delta > TIMEOUT_MAX) {
+      self.timeout.id = setTimeout(function () {
+        self._start();
+      }, TIMEOUT_MAX);
+    } else {
+      self.timeout.id = setTimeout(function () {
+  
+        // sync job
+        if (job.length < 2) {
+          try { job.call(self, payload); }
+          catch (err) { onDone(err); }
+          finally { onDone(); }
+        // async job
+        } else {
+          job.call(self, payload, onDone);
         }
-
-        self.db.del(key, function (err) {
-          self._start();
-        });
-      }
-
-    }, ts - Date.now());
+  
+        function onDone (err) {
+          if (err) {
+            err._type = 'executing job';
+            err._task = task;
+            self.emit('error', err);
+          }
+  
+          self.db.del(key, function (err) {
+            self._start();
+          });
+        }
+  
+      }, delta);
+    }
   });
 }
 
