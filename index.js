@@ -1,4 +1,3 @@
-var Sublevel     = require('level-sublevel');
 var peek         = require('level-peek');
 var stringify    = require('json-stringify-safe');
 var EventEmitter = require('events').EventEmitter;
@@ -22,8 +21,7 @@ function schedule (db, prefix) {
   
   EventEmitter.call(this);
 
-  this.db = Sublevel(db).sublevel(prefix || 'schedule!');
-
+  this.db = db;
   this.jobs = {};
   this.timeout = null;
 
