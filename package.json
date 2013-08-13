@@ -12,17 +12,14 @@
     "test": "tap test/*.js"
   },
   "dependencies": {
-    "level-sublevel": "~4.0.3",
+    "level-sublevel": "~5.0.1",
     "level-peek": "~1.0.6",
-    "json-stringify-safe": "~4.0.0"
+    "json-stringify-safe": "~5.0.0"
   },
   "devDependencies": {
-    "tap": "*",
-    "levelup": "~0.6.2",
-    "rimraf": "~2.1.4"
-  },
-  "peerDependencies": {
-    "levelup": "*"
+    "tap": "~0.4.4",
+    "rimraf": "~2.1.4",
+    "level": "~0.13.0"
   },
   "keywords": [
     "schedule",

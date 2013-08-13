@@ -1,5 +1,5 @@
 var rimraf = require('rimraf');
-var levelup = require('levelup');
+var level = require('level');
 var Schedule = require('..');
 var tap = require('tap');
 
@@ -110,7 +110,7 @@ test('error: async err', function (t, db) {
 function test (name, fn) {
   tap.test(name, function (t) {
     rimraf.sync(__dirname + '/db');
-    var db = levelup(__dirname + '/db');
+    var db = level(__dirname + '/db');
 
     var oldEnd = t.end;
     t.end = function () {
