@@ -1,7 +1,7 @@
 {
   "name": "level-schedule",
   "description": "Durable job scheduler based on LevelDB",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/juliangruber/level-schedule.git"
