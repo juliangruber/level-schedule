@@ -64,10 +64,9 @@ Schedule(db)
 
 ## API
 
-### Schedule(db[, prefix])
+### Schedule(db)
 
-Setup `level-schedule` to use `db`, storing tasks under `prefix`
-(defaults to `schedule!`).
+Setup `level-schedule` to use `db`.
 
 ### Schedule#job(name, fn)
 
