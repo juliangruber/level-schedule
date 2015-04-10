@@ -12,12 +12,11 @@ module.exports = schedule;
  *   `<timestamp>!<random>` = { job : 'name' , payload : { pay : 'load' } }
  *
  * @param {levelUp} db
- * @param {String=} prefix
  * @return {schedule}
  */
 
-function schedule (db, prefix) {
-  if (!(this instanceof schedule)) return new schedule(db, prefix);
+function schedule (db) {
+  if (!(this instanceof schedule)) return new schedule(db);
   
   EventEmitter.call(this);
 
