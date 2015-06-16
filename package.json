@@ -16,9 +16,9 @@
     "json-stringify-safe": "~5.0.0"
   },
   "devDependencies": {
-    "tap": "~0.4.4",
+    "level": "^1.1.0",
     "rimraf": "~2.1.4",
-    "level": "~0.13.0"
+    "tap": "~0.4.4"
   },
   "keywords": [
     "schedule",
