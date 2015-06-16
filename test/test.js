@@ -77,6 +77,23 @@ test('async w/ payload', function (t, db) {
     .run('async', 'foo', Date.now());
 });
 
+test('async w/ queued async', function (t, db) {
+  var sch = Schedule(db);
+  sch
+    .job('async', function (payload, done) {
+      done();
+      // This has to execute after the done() has deleted the previous task.
+      setTimeout(function() {
+        sch.run('async2', 'foo', Date.now())
+      }, 1000);
+    })
+    .job('async2', function(payload, done) {
+      done();
+      t.end();
+    })
+    .run('async', 'foo', Date.now());
+});
+
 test('error: job not found', function (t, db) {
   Schedule(db)
     .on('error', function (err) {

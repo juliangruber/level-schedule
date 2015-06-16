@@ -92,12 +92,16 @@ schedule.prototype._start = function () {
 
   peek.first(self.db, function (err, key, task) {
     // no tasks found
-    if (err) return;
+    if (err) {
+      if (self.timeout) clearTimeout(self.timeout.id);
+      self.timeout = null;
+      return;
+    }
 
     // we inserted the task so we can trust it's valid json
     task = JSON.parse(task);
 
-    var ts = key.split('!')[0];
+    var ts = parseInt(key.split('!')[0], 10);
     var job = self.jobs[task.job];
     var payload = task.payload;
 
