@@ -2,6 +2,7 @@ var peek         = require('level-peek');
 var stringify    = require('json-stringify-safe');
 var EventEmitter = require('events').EventEmitter;
 var inherits     = require('util').inherits;
+var lexi         = require('lexicographic-integer');
 
 module.exports = schedule;
 
@@ -56,7 +57,7 @@ schedule.prototype.run = function (job, payload, ts) {
     payload : payload
   })
 
-  var key = ts + '!' + Math.random().toString(16).slice(2);
+  var key = lexi.pack(ts, 'hex') + '!' + Math.random().toString(16).slice(2);
 
   self.db.put(key, task, function (err) {
     if (err) return error('saving job', err);

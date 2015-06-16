@@ -12,8 +12,9 @@
     "test": "tap test/*.js"
   },
   "dependencies": {
+    "json-stringify-safe": "~5.0.0",
     "level-peek": "~1.0.6",
-    "json-stringify-safe": "~5.0.0"
+    "lexicographic-integer": "^1.1.0"
   },
   "devDependencies": {
     "level": "^1.1.0",

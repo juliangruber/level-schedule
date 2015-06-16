@@ -124,6 +124,23 @@ test('error: async err', function (t, db) {
     .run('async', Date.now());
 });
 
+test('key comparisons', function (t, db) {
+  t.plan(2);
+  var first = true;
+
+  Schedule(db)
+  .job('sync', function(payload){
+    if (first) {
+      t.equal(payload, 'first');
+      first = false;
+    } else {
+      t.equal(payload, 'second');
+    }
+  })
+  .run('sync', 'first', 2)
+  .run('sync', 'second', 10);
+});
+
 function test (name, fn) {
   tap.test(name, function (t) {
     rimraf.sync(__dirname + '/db');
