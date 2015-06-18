@@ -12,6 +12,7 @@
     "test": "tap test/*.js"
   },
   "dependencies": {
+    "debug": "^2.2.0",
     "json-stringify-safe": "~5.0.0",
     "level-peek": "~1.0.6",
     "lexicographic-integer": "^1.1.0"
