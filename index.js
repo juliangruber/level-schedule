@@ -3,6 +3,7 @@ var stringify    = require('json-stringify-safe');
 var EventEmitter = require('events').EventEmitter;
 var inherits     = require('util').inherits;
 var lexi         = require('lexicographic-integer');
+var debug        = require('debug')('level-schedule');
 
 module.exports = schedule;
 
@@ -58,6 +59,7 @@ schedule.prototype.run = function (job, payload, ts) {
   })
 
   var key = lexi.pack(ts, 'hex') + '!' + Math.random().toString(16).slice(2);
+  debug('run', key, ts, payload);
 
   self.db.put(key, task, function (err) {
     if (err) return error('saving job', err);
@@ -91,7 +93,11 @@ schedule.prototype.job = function (name, fn) {
 schedule.prototype._start = function () {
   var self = this;
 
+  debug('kick');
+
   peek.first(self.db, function (err, key, task) {
+    debug('peeked', err, key, task);
+
     // no tasks found
     if (err) {
       if (self.timeout) clearTimeout(self.timeout.id);
@@ -102,9 +108,11 @@ schedule.prototype._start = function () {
     // we inserted the task so we can trust it's valid json
     task = JSON.parse(task);
 
-    var ts = parseInt(key.split('!')[0], 10);
+    var ts = task.ts;
     var job = self.jobs[task.job];
     var payload = task.payload;
+
+    debug('parsed', key, ts, payload);
 
     if (!job) {
       var err = new Error('job not found');
@@ -112,22 +120,28 @@ schedule.prototype._start = function () {
       return self.emit('error', err);
     }
 
+    debug('self.timeout', self.timeout);
     if (self.timeout) clearTimeout(self.timeout.id);
+
+    debug('scheduling', ts - Date.now());
 
     self.timeout = { ts : ts };
     self.timeout.id = setTimeout(function () {
 
       // sync job
       if (job.length < 2) {
+        debug('exec-sync', key, payload);
         try { job.call(self, payload); }
         catch (err) { onDone(err); }
         finally { onDone(); }
       // async job
       } else {
+        debug('exec-async', key, payload);
         job.call(self, payload, onDone);
       }
 
       function onDone (err) {
+        debug('exec-done', err, key);
         if (err) {
           err._type = 'executing job';
           err._task = task;
