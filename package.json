@@ -14,13 +14,13 @@
   "dependencies": {
     "debug": "^2.2.0",
     "json-stringify-safe": "~5.0.0",
-    "level-peek": "~1.0.6",
+    "level-peek": "~2.0.2",
     "lexicographic-integer": "^1.1.0"
   },
   "devDependencies": {
     "level": "^1.1.0",
-    "rimraf": "~2.1.4",
-    "tap": "~0.4.4"
+    "rimraf": "~2.5.4",
+    "tap": "~8.0.1"
   },
   "keywords": [
     "schedule",
